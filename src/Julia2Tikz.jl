@@ -1,38 +1,31 @@
 module Julia2Tikz
 
+include("./TikzTypes.jl")
+include("./TikzAxis.jl")
+include("./TikzFigure.jl")
 include("./PlotStyles/PlotStyles.jl")
 
-struct TikzAxis
-	plots::AbstractVector{AbstractTikzPlot}
-end
-
-function TikzAxis()
-	return TikzAxis([])
-end
-
-struct TikzFigure
-	axes::AbstractVector{TikzAxis}
-end
-
-function TikzFigure()
-	defaultAxis = TikzAxis()
-	return TikzFigure([defaultAxis])
-end
+# Mapping between the plot_type argument and underlying function when calling plot()
+plot_type_map = Dict{Symbol, Function}(
+										:scatter => scatter
+									   )
 
 # Plotting routines
-function plot(x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, plotType::Symbol=:scatter)
+function plot(x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
 	plt = TikzFigure()
-	plot!(plt, x, y, plotType)
+	defaultAxis = TikzAxis()
+	push!(plt.axes, defaultAxis)
+	plot!(plt, x, y, attributes, plotType=plotType)
 	return plt
 end
 
-function plot!(figure::TikzFigure, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, plotType::Symbol=:scatter)
-	plot!(figure.axes[end], x, y)
+function plot!(figure::AbstractTikzFigure, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
+	plot!(figure.axes[end], x, y, attributes, plotType=plotType)
 end
 
 # This currently only works with a scatter plot. How do we use multiple dispatch given a symbol argument to point to different plot types?
-function plot!(axis::TikzAxis, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, plotType::Symbol=:scatter)
-	thisPlot = scatter(x, y)
+function plot!(axis::AbstractTikzAxis, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
+	thisPlot = scatter(x, y, attributes)
 	push!(axis.plots, thisPlot)
 end
 
