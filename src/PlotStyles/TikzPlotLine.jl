@@ -5,16 +5,17 @@ struct TikzPlotLine <: AbstractTikzPlot
 end
 
 
-function line!(axis::TikzAxis, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
+function line!(axis::TikzAxis, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
 	push!(axis.plots, TikzPlotLine(x, y, attributes))
 	return axis
 end
 
-function line!(figure::TikzFigure, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
-	return line!(figure.axis[begin], x, y, attributes)
+function line!(figure::TikzFigure, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
+	line!(figure.axes[begin], x, y, attributes)
+	return figure
 end
 
-function line(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
+function line(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
 	return line!(EmptyTikzFigure(), x, y, attributes)
 end
 
