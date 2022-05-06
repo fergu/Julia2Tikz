@@ -5,3 +5,7 @@ end
 function TikzAxis()
 	return TikzAxis([])
 end
+
+function EmptyTikzAxis()
+	return TikzAxis()
+end
