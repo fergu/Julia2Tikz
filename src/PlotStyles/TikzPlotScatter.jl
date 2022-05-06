@@ -4,16 +4,17 @@ struct TikzPlotScatter <: AbstractTikzPlot
 	attributes::Dict{String, String}
 end
 
-function scatter!(axis::TikzAxis, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
+function scatter!(axis::TikzAxis, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
 	push!(axis.plots, TikzPlotLine(x, y, attributes))
 	return axis
 end
 
-function scatter!(figure::TikzFigure, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
-	return scatter!(figure.axis[begin], x, y, attributes)
+function scatter!(figure::TikzFigure, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
+	scatter!(figure.axes[begin], x, y, attributes)
+	return figure
 end
 
-function scatter(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict())
+function scatter(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}=Dict{String,String}())
 	return scatter!(EmptyTikzFigure(), x, y, attributes)
 end
 
