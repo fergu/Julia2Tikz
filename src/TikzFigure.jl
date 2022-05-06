@@ -3,7 +3,7 @@ struct TikzFigure <: AbstractTikzFigure
 end
 
 function TikzFigure()
-	return TikzFigure([])
+	return TikzFigure([EmptyTikzAxis()])
 end
 
 function EmptyTikzFigure()
