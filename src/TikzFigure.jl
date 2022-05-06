@@ -5,3 +5,8 @@ end
 function TikzFigure()
 	return TikzFigure([])
 end
+
+function EmptyTikzFigure()
+	return TikzFigure()
+end
+
