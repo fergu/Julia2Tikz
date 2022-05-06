@@ -6,26 +6,27 @@ include("./TikzFigure.jl")
 include("./PlotStyles/PlotStyles.jl")
 
 # Mapping between the plot_type argument and underlying function when calling plot()
-plot_type_map = Dict{Symbol, Function}(
-										:scatter => scatter
-									   )
+const plot_type_map = Dict{Symbol, Function}(
+										     :scatter => scatter
+									        )
 
 # Plotting routines
-function plot(x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
+function plot(x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
 	plt = TikzFigure()
 	defaultAxis = TikzAxis()
 	push!(plt.axes, defaultAxis)
-	plot!(plt, x, y, attributes, plotType=plotType)
+	plot!(plt, x, y, attributes; plotType)
 	return plt
 end
 
 function plot!(figure::AbstractTikzFigure, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
-	plot!(figure.axes[end], x, y, attributes, plotType=plotType)
+    plot!(figure.axes[end], x, y, attributes; plotType)
 end
 
-# This currently only works with a scatter plot. How do we use multiple dispatch given a symbol argument to point to different plot types?
-function plot!(axis::AbstractTikzAxis, x::AbstractVector{<: Real}, y::AbstractVector{<: Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
-	thisPlot = scatter(x, y, attributes)
+
+function plot!(axis::AbstractTikzAxis, x::AbstractVector{<:Real}, y::AbstractVector{<:Real}, attributes::Dict{String,String}; plotType::Symbol=:scatter)
+	plotType in keys(plot_type_map) || ArgumentError("Invalid plot type $plotType")
+	thisPlot = plot_type_map[plotType](x, y, attributes)
 	push!(axis.plots, thisPlot)
 end
 
